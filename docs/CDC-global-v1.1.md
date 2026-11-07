@@ -1,9 +1,9 @@
 # Cahier des charges global — Homelab Cloud, DevSecOps & Cybersecurity
 
-**Version :** 1.0 — Cadrage global  
+**Version :** 1.1 — Actualisation de l’environnement et méthode de réalisation  
 **Statut :** Document maître de référence  
 **Nature :** Portfolio technique personnel, orienté architecture d'entreprise  
-**Périmètre :** Trois projets GitHub interconnectés et indépendamment valorisables
+**Périmètre :** Trois projets GitHub interconnectés et indépendamment valorisables, reliés par un dépôt documentaire central
 
 ---
 
@@ -142,7 +142,7 @@ Le projet doit fournir une fondation cohérente, reproductible et documentée.
 
 ### 3.5. Référence
 
-Le **CDC détaillé du Projet 1 — Version 1.0** constitue la spécification de référence de ce projet.
+Le **CDC détaillé du Projet 1** constitue la spécification de référence de ce projet. Sa version évolue indépendamment du présent CDC maître.
 
 Le présent document maître n'a pas vocation à reproduire les détails du CDC P1.
 
@@ -428,7 +428,7 @@ Le CDC P3 déterminera l'architecture précise, les outils, les scénarios prior
 
 ### 6.1. PVE-01 — Infrastructure principale
 
-**Machine :** HP ProBook 430 G5
+**Machine :** HP ProBook G5 (modèle exact à confirmer : 430/340 selon les relevés antérieurs)
 
 - Processeur : Intel Core i5-8250U, 4 cœurs / 8 threads.
 - RAM : 8 Go.
@@ -451,8 +451,9 @@ La RAM constitue la contrainte principale.
 
 - RAM totale : 32 Go.
 - SSD : 512 Go.
-- Système hôte : environnement de travail personnel.
-- Proxmox secondaire : virtualisation imbriquée, à titre expérimental.
+- Système hôte : Linux Mint 22.3 (remplace Windows 11).
+- Hyperviseur local : KVM/QEMU avec virt-manager (installé ; remplace VMware Workstation).
+- Proxmox secondaire PVE-02 : VM en virtualisation imbriquée, à titre expérimental, **non encore créée**.
 
 Dimensionnement initial envisagé :
 
@@ -464,7 +465,17 @@ Cette infrastructure est destinée à accueillir des charges complémentaires, n
 
 **Point d'attention :** PVE-02 est une capacité expérimentale et optionnelle. Le homelab doit rester exploitable lorsque cette machine est arrêtée.
 
-### 6.3. Évolutivité
+### 6.3. Connectivité actuelle et démarrage des sessions
+
+- Le ZBook utilise le Wi-Fi pour l’accès Internet et une liaison Ethernet directe vers PVE-01.
+- Interface Ethernet du ZBook : `192.168.137.1/24` ; gestion PVE-01 : `192.168.137.10/24`.
+- Le ZBook assure le routage/NAT vers le Wi-Fi ; ce mécanisme remplace le partage de connexion Windows.
+- Avant toute session nécessitant l’accès au serveur, lancer `lanshare start` sur le ZBook et vérifier la connectivité.
+- `lanshare` est un outil local de préparation de l’environnement : il ne constitue pas une dépendance fonctionnelle de la landing zone déployée. Sa configuration et sa persistance doivent être vérifiées selon les besoins.
+- La connexion entre les futurs réseaux de PVE-01 et PVE-02 reste à concevoir et valider ; KVM installé ne signifie pas que le second nœud est opérationnel.
+- Conserver l’accès direct à PVE-01 sur l’underlay, indépendamment du fonctionnement d’OPNsense.
+
+### 6.4. Évolutivité
 
 Les ressources disponibles ne permettent pas nécessairement de faire fonctionner simultanément toutes les plateformes.
 
@@ -588,7 +599,7 @@ GitHub Portfolio
 +-- project-03-detection-as-code-soar
 ```
 
-Le CDC global pourra être conservé dans un espace documentaire central, avec des liens vers les trois projets.
+Le CDC global est conservé dans un dépôt documentaire central `homelab-portfolio`, avec des liens vers les trois dépôts techniques. Ce dépôt n’est pas un quatrième projet technique.
 
 ### 9.2. Contenu documentaire minimal
 
@@ -702,6 +713,15 @@ Ne pas publier :
 ---
 
 ## 12. Stratégie de réalisation
+
+### Organisation du travail en sessions
+
+- Une session de travail correspond à **environ deux heures**.
+- Chaque session possède un objectif limité, des prérequis, des livrables concrets et des critères de validation.
+- Les phases du CDC détaillé peuvent être découpées en plusieurs sessions ; une phase ne doit pas être considérée comme réalisable automatiquement en deux heures.
+- La session initiale comprend la mise à jour documentaire et l’initialisation des dépôts Git.
+- La préparation KVM/QEMU du ZBook est considérée comme réalisée ; la création et la configuration de PVE-02 restent des travaux futurs.
+- Une session terminée doit laisser une trace dans Git : documentation, décision, test ou code, selon le cas.
 
 ### Phase globale 0 — Cadrage
 
@@ -929,6 +949,15 @@ Une modification du CDC d'un projet ne doit entraîner une modification du CDC m
 | CDC P1 — Hybrid Landing Zone | Architecture infrastructure détaillée | V1.0 existante |
 | CDC P2 — DevSecOps & GitOps | Architecture de livraison logicielle | À rédiger |
 | CDC P3 — Detection-as-Code & SOAR | Architecture de détection et réponse | À rédiger |
+
+---
+
+## Historique des versions
+
+| Version | Évolution |
+|---|---|
+| 1.0 | Cadrage initial du homelab et des trois projets. |
+| 1.1 | Migration du ZBook vers Linux Mint 22.3 ; remplacement de VMware par KVM/QEMU et virt-manager ; routage/NAT Linux avec préparation `lanshare start` ; dépôt documentaire central ; organisation en sessions de deux heures ; clarification du statut non déployé de PVE-02. |
 
 ---
 
